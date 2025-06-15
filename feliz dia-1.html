@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>¡Feliz Día del Padre!</title>
+  <style>
+    /* Slideshow */
+    #slideshow {
+      margin:40px auto 10px;
+      max-width:300px;
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 5px 18px rgba(27,94,32,0.4);
+      cursor:pointer;
+      user-select:none;
+    }
+    #slideshow img {
+      width:100%;
+      display:none;
+    }
+    #slideshow img.active {
+      display:block;
+    }
+
+    /* Estilos básicos */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fff;
+      color: #222;
+      text-align: center;
+      padding: 20px;
+    }
+
+    body.dark {
+      background: #111;
+      color: #eee;
+    }
+
+    #btnModo {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    #contador {
+      font-size: 1.2em;
+      margin-top: 20px;
+    }
+
+    .boleto {
+      background-color: #e8f5e9;
+      border: 2px dashed #4caf50;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 400px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .boleto:hover {
+      background-color: #c8e6c9;
+    }
+
+    #imagenEstadio, #boletoImagen {
+      display: block;
+      max-width: 90%;
+      margin: 20px auto;
+      border-radius: 10px;
+      transition: opacity 0.5s;
+    }
+
+    #boletoImagen {
+      display: none;
+    }
+
+    #mensajeFinal {
+      margin-top: 30px;
+      font-size: 1.1em;
+      display: none;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      margin-top: 20px;
+    }
+
+    #zonaMensaje {
+      margin-top: 30px;
+    }
+
+    #inputMensaje {
+      width: 80%;
+      padding: 10px;
+      font-size: 1em;
+    }
+
+    #mensajito {
+      margin-top: 15px;
+      font-style: italic;
+    }
+
+    /* Confeti */
+    .confeti {
+      position: fixed;
+      top: 0;
+      width: 8px;
+      height: 8px;
+      z-index: 9999;
+      opacity: 0.8;
+      animation: caer 4s linear infinite;
+    }
+
+    @keyframes caer {
+      to {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Globos */
+    .globo {
+      position: fixed;
+      bottom: -50px;
+      border-radius: 50%;
+      animation: flotar 10s linear infinite;
+      opacity: 0.7;
+      z-index: 1000;
+    }
+
+    @keyframes flotar {
+      to {
+        transform: translateY(-110vh);
+      }
+    }
+
+    /* Partículas */
+    .particula {
+      position: fixed;
+      background: white;
+      border-radius: 50%;
+      z-index: 0;
+      opacity: 0.5;
+      animation: flotarPart 5s linear infinite;
+    }
+
+    @keyframes flotarPart {
+      to {
+        transform: translateY(-100vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button id="btnModo">Modo oscuro</button>
+  <h1>🎉 ¡Feliz Día del Padre! 🎉</h1>
+
+  <div id="mensajeInicial"><p></p></div>
+  <div id="contador"></div>
+
+  <!-- Slideshow con caja y 3 imágenes -->
+  <div id="slideshow">
+    <img src="C:\Users\ED\Desktop\Feliz dia\slide1.jpeg" class="active" alt="Foto 1">
+    <img src="C:\Users\ED\Desktop\Feliz dia\slide2.jpeg" alt="Foto 2">
+    <img src="C:\Users\ED\Desktop\Feliz dia\slide3.jpeg" alt="Foto 3">
+  </div>
+
+  <div class="boleto" onclick="mostrarBoleto()" tabindex="0" role="button">
+    <h2>🎫 Haz clic aquí para descubrir tu boleto especial</h2>
+    <p>📍 Estadio RGV - Chalco</p>
+    <p>🗓️ Domingo 15 de junio</p>
+    <p>🕓 4:00 PM</p>
+  </div>
+
+  <img id="imagenEstadio" src="C:\Users\ED\Desktop\Feliz dia\green.jpg" alt="Estadio">
+  <img id="boletoImagen" src="C:\Users\ED\Desktop\Feliz dia\boleto.jpeg" alt="Boleto especial">
+
+  <div id="mensajeFinal"><p></p></div>
+  <a class="btn" id="btnCompartir" target="_blank">Compartir por WhatsApp</a>
+
+  <div id="zonaMensaje">
+    <textarea id="inputMensaje" placeholder="Déjame un mensaje, papá..."></textarea><br>
+    <button onclick="mostrarMensaje()">Enviar mensaje</button>
+    <div id="mensajito"></div>
+  </div>
+
+  <audio id="audioFondo" loop src="C:\Users\ED\Desktop\Feliz dia\Wh.mpeg"></audio>
+  <audio id="audioConfeti" src="aplausos.mp3"></audio>
+  <div id="contenedorGlobos"></div>
+
+  <script>
+    const btnModo = document.getElementById('btnModo');
+    btnModo.onclick = () => document.body.classList.toggle('dark');
+
+    const textoInicial = "Querido papá,\nGracias por ser mi refugio seguro, mi guía en cada paso y mi héroe sin capa.\nTu amor incondicional y tu fuerza me inspiran cada día.";
+    const textoFinal = "Este boleto es solo una muestra del inmenso amor que te tengo.\nGracias por tu paciencia, por creer siempre en mí.\n¡Juntos haremos recuerdos inolvidables este partido!\nTe quiero con todo mi ❤️";
+
+    function escribe(texto, contenedor, delay=50, cb) {
+      let i=0;
+      function paso() {
+        if (i<texto.length) {
+          contenedor.innerHTML += texto[i]==="\n"?"<br>":texto[i];
+          i++;
+          setTimeout(paso, delay);
+        } else if(cb) cb();
+      }
+      paso();
+    }
+
+    document.addEventListener('DOMContentLoaded',()=>{
+      escribe(textoInicial, document.querySelector('#mensajeInicial p'), 40);
+    });
+
+    function actualizarContador(){
+      const evento = new Date("2025-06-15T17:00:00");
+      const diff = evento - new Date();
+      if(diff>0){
+        const d = String(Math.floor(diff/86400000)).padStart(2,'0');
+        const h = String(Math.floor(diff%86400000/3600000)).padStart(2,'0');
+        const m = String(Math.floor(diff%3600000/60000)).padStart(2,'0');
+        const s = String(Math.floor(diff%60000/1000)).padStart(2,'0');
+        document.getElementById('contador').textContent = `Faltan ${d}d ${h}h ${m}m ${s}s para el gran día`;
+      } else document.getElementById('contador').textContent="¡Hoy es el gran día!";
+    }
+    setInterval(actualizarContador,1000);
+
+    // Slideshow con clase "active"
+    const sl = document.getElementById('slideshow');
+    const imgs = sl.querySelectorAll('img');
+    let idx = 0;
+    setInterval(() => {
+      imgs[idx].classList.remove('active');
+      idx = (idx + 1) % imgs.length;
+      imgs[idx].classList.add('active');
+    }, 4000);
+
+    // Globos
+    const contenedor = document.getElementById('contenedorGlobos');
+    const colors = ['#e53935','#8e24aa','#3949ab','#43a047','#fbc02d','#fb8c00','#6d4c41','#d81b60','#00acc1'];
+    function crearGlobo(){
+      const b=document.createElement('div');
+      b.className='globo';
+      const size = 20 + Math.random()*25;
+      b.style.width=b.style.height=''; b.style.width=`${size}px`; b.style.height=`${size*1.3}px`;
+      const color=colors[Math.floor(Math.random()*colors.length)];
+      b.style.background = color;
+      b.style.animationDuration = `${6+Math.random()*5}s`;
+      b.style.left = `${Math.random()*100}vw`;
+      contenedor.appendChild(b);
+      setTimeout(()=>b.remove(),12000);
+    }
+    setInterval(crearGlobo,400);
+
+    // Confeti
+    function lanzarConfeti(){
+      const count=80;
+      for(let i=0;i<count;i++){
+        const e=document.createElement('div');
+        e.className='confeti';
+        e.style.background=colors[Math.floor(Math.random()*colors.length)];
+        e.style.left=Math.random()*100+'vw';
+        e.style.animationDuration= 3+Math.random()*2 + 's';
+        e.style.width=e.style.height=Math.random()*8+4+'px';
+        document.body.appendChild(e);
+        e.addEventListener('animationend',()=>e.remove());
+      }
+    }
+
+    function crearParticula(){
+      const e=document.createElement('div');
+      e.className='particula';
+      const size=2+Math.random()*3;
+      e.style.width=e.style.height=size+'px';
+      e.style.left=Math.random()*100+'vw';
+      e.style.top=Math.random()*100+'vh';
+      e.style.animationDuration=2+Math.random()*3+'s';
+      document.body.appendChild(e);
+      setTimeout(()=>e.remove(),5000);
+    }
+    setInterval(crearParticula,500);
+
+    function mostrarBoleto(){
+      document.getElementById("boletoImagen").style.display='block';
+      document.getElementById("imagenEstadio").style.opacity=0;
+      setTimeout(()=>document.getElementById("imagenEstadio").style.display='none',600);
+      document.querySelector('.boleto').style.display='none';
+      document.getElementById("audioFondo").play();
+      document.getElementById("audioConfeti").play();
+      lanzarConfeti();
+      const mf=document.getElementById('mensajeFinal');
+      escribe(textoFinal, mf,40);
+      mf.style.display='block';
+    }
+
+    const btnC = document.getElementById('btnCompartir');
+    btnC.href = "https://wa.me/?text=" + encodeURIComponent(
+      "¡Feliz Día del Padre! Te regalo este boleto sorpresa y todo mi cariño ❤️"
+    );
+    btnC.textContent = "Compartir por WhatsApp";
+
+    function mostrarMensaje(){
+      const msg = document.getElementById('inputMensaje').value.trim();
+      if(msg){
+        document.getElementById('mensajito').textContent = "Papá dice: " + msg;
+        document.getElementById('inputMensaje').value = '';
+      }
+    }
+  </script>
+</body>
+</html>
